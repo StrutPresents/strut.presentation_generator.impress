@@ -1,3 +1,4 @@
+if (typeof define !== 'function') { var define = require('amdefine')(module) }
 define(["handlebars", "common/Math2", "marked", "strut/deck/Utils"],
 function(Handlebars, Math2, marked, DeckUtils) {
 	var ImpressGenerator;
