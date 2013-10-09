@@ -12,35 +12,38 @@ function(Handlebars, Math2, marked, DeckUtils) {
 			var _this = this;
 			Handlebars.registerHelper("renderComponent", function(componentModel, ignore) {
 				var result;
+				if ('attributes' in componentModel)
+					componentModel = componentModel.attributes;
+				
 				result = "";
 				if (ignore && typeof ignore == 'string') {
 					ignore = ignore.split(" ");
-					if (ignore.indexOf(componentModel.get("type")) != -1)
+					if (ignore.indexOf(componentModel.type) != -1)
 						return result;
 				}
-				switch (componentModel.get("type")) {
+				switch (componentModel.type) {
 					case "Image":
-						if (componentModel.get("imageType") === "SVG") {
-							result = JST["strut.presentation_generator.impress/SVGImage"](componentModel.attributes);
+						if (componentModel.imageType === "SVG") {
+							result = JST["strut.presentation_generator.impress/SVGImage"](componentModel);
 						} else {
-							result = JST["strut.presentation_generator.impress/Image"](componentModel.attributes);
+							result = JST["strut.presentation_generator.impress/Image"](componentModel);
 						}
 						break;
 					case "TextBox":
-						result = JST["strut.presentation_generator.impress/TextBox"](_this.convertTextBoxData(componentModel.attributes));
+						result = JST["strut.presentation_generator.impress/TextBox"](componentModel);
 						break;
 					case "Video":
-						if (componentModel.get("videoType") === "html5") {
-							result = JST["strut.presentation_generator.impress/Video"](componentModel.attributes);
+						if (componentModel.videoType === "html5") {
+							result = JST["strut.presentation_generator.impress/Video"](componentModel);
 						} else {
-							result = JST["strut.presentation_generator.impress/Youtube"](componentModel.attributes);
+							result = JST["strut.presentation_generator.impress/Youtube"](componentModel);
 						}
 						break;
 					case "WebFrame":
-						result = JST["strut.presentation_generator.impress/WebFrame"](componentModel.attributes);
+						result = JST["strut.presentation_generator.impress/WebFrame"](componentModel);
 						break;
 					case "Shape":
-						result = JST["strut.presentation_generator.impress/Shape"](componentModel.attributes);
+						result = JST["strut.presentation_generator.impress/Shape"](componentModel);
 						break;
 				}
 				return new Handlebars.SafeString(result);
@@ -95,7 +98,7 @@ function(Handlebars, Math2, marked, DeckUtils) {
 			});
 
 			Handlebars.registerHelper("slideBGImg", function(slide) {
-				var bg = slide.get('background');
+				var bg = slide.background;
 				if (bg && bg.indexOf('img:') == 0)
 					return 'background-image: url(' + bg.substring(4) + ');';
 				return '';
@@ -156,20 +159,20 @@ function(Handlebars, Math2, marked, DeckUtils) {
 		ImpressGenerator.prototype.render = function(deck) {
 			var cnt, colCnt, slides,
 				_this = this;
-			var deckAttrs = deck.attributes;
+			var deckAttrs = deck;
 			slides = deckAttrs.slides;
 			colCnt = 6;
 			cnt = 0;
 
 			var minX, minY, maxX, maxY;
 
-			slides.each(function(slide) {
+			slides.forEach(function(slide) {
 				var x;
-				x = slide.get("x");
-				y = slide.get('y');
+				x = slide.x;
+				y = slide.y;
 				if (!(x != null)) {
-					slide.set("x", cnt * 280 + 180);
-					slide.set("y", ((cnt / colCnt) | 0) * 280 + 180);
+					slide.x = cnt * 280 + 180;
+					slide.y = ((cnt / colCnt) | 0) * 280 + 180;
 				}
 
 				if (minX == null || x < minX)
