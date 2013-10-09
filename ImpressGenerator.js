@@ -38,6 +38,10 @@ function(Handlebars, Math2, marked, DeckUtils) {
 						break;
 					case "WebFrame":
 						result = JST["strut.presentation_generator.impress/WebFrame"](componentModel.attributes);
+						break;
+					case "Shape":
+						result = JST["strut.presentation_generator.impress/Shape"](componentModel.attributes);
+						break;
 				}
 				return new Handlebars.SafeString(result);
 			});
@@ -101,6 +105,16 @@ function(Handlebars, Math2, marked, DeckUtils) {
 				if (string)
 					return new Handlebars.SafeString(marked(string));
 				return '';
+			});
+
+			Handlebars.registerHelper("shapeSvg", function() {
+				if (this.fill && this.markup) {
+					var string = '<svg fill="' + this.fill + '" ' + this.markup.substring(4);
+					return new Handlebars.SafeString(string);
+				} else if (this.markup) {
+					return new Handlebars.SafeString(this.markup);
+				} else
+					return '';
 			});
 
 			Handlebars.registerHelper("isBGImg", function(string, options) {
